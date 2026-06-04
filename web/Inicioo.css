@@ -1,0 +1,416 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Poppins', sans-serif;
+    background:#4a1036;
+}
+
+/* CONTENEDOR */
+
+.contenedor-sitio{
+    width:100%;
+    min-height:100vh;
+}
+
+/* NAVBAR */
+
+.navbar-top{
+    width:100%;
+    height:95px;
+
+    background:linear-gradient(to right,#d88ba7,#efc0d2);
+
+    display:flex;
+    align-items:center;
+
+    padding:0 25px;
+}
+
+.nav-logo{
+    width:160px;
+}
+
+/* MENU */
+
+.menu-nav{
+    width:100%;
+    height:58px;
+
+    background:#e7b0ca;
+
+    display:flex;
+    align-items:center;
+
+    padding-left:15px;
+
+    gap:10px;
+
+    border-top:2px solid #f4d8e4;
+    border-bottom:4px solid #4a1036;
+}
+
+.menu-nav a{
+    text-decoration:none;
+
+    color:white;
+
+    font-size:20px;
+
+    transition:.3s;
+}
+
+.menu-nav a:hover{
+    color:#4a1036;
+}
+
+.menu-nav span{
+    color:white;
+}
+
+/* CONTENIDO */
+
+.contenido{
+    background:#4a1036;
+
+    padding:10px;
+}
+
+/* PANEL */
+
+.panel-principal{
+    width:100%;
+
+    background:#f0e8e4;
+
+    border-radius:0 0 25px 25px;
+
+    border-top:6px solid #b23563;
+
+    padding:18px;
+}
+
+/* BIENVENIDA */
+
+.bienvenida h1{
+    font-family:'Pacifico', cursive;
+
+    color:#7a1c4d;
+
+    font-size:55px;
+
+    line-height:60px;
+}
+
+.bienvenida p{
+    color:#666;
+
+    margin-left:10px;
+
+    margin-top:5px;
+}
+
+/* RESUMEN */
+
+.resumen-container{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-top:20px;
+
+    flex-wrap:wrap;
+}
+
+/* CARD */
+
+.card-ocupadas{
+    width:380px;
+
+    background:#ece5dc;
+
+    border:2px solid #b9b287;
+
+    border-radius:25px;
+
+    padding:20px;
+
+    display:flex;
+    align-items:center;
+
+    gap:20px;
+}
+
+.icono-mesa{
+    width:70px;
+    height:70px;
+
+    background:#f3dce5;
+
+    border-radius:15px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    color:#d285a4;
+
+    font-size:35px;
+}
+
+.info-mesas h3{
+    color:#555;
+
+    font-size:35px;
+
+    font-weight:400;
+}
+
+.numero{
+    display:flex;
+    align-items:flex-end;
+}
+
+.ocupadas{
+    font-size:70px;
+
+    color:#7a1c4d;
+
+    line-height:70px;
+}
+
+.total{
+    font-size:45px;
+
+    color:#333;
+}
+
+.info-mesas p{
+    color:#666;
+}
+
+/* BOTONES */
+
+.acciones{
+    display:flex;
+    flex-direction:column;
+
+    gap:25px;
+}
+
+.acciones button{
+    width:260px;
+    height:48px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#d6bad8;
+
+    color:white;
+
+    font-size:25px;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+.acciones button:hover{
+    transform:scale(1.03);
+
+    background:#c69dc9;
+}
+
+/* MAPA */
+
+.mapa-container{
+    width:100%;
+
+    margin-top:40px;
+
+    background:#f6efec;
+
+    border:2px solid #dfc0bb;
+
+    border-radius:50px;
+
+    padding:30px;
+}
+
+.mapa-container h2{
+    text-align:center;
+
+    color:#8a2957;
+
+    font-size:40px;
+
+    margin-bottom:25px;
+}
+
+/* LEYENDA */
+
+.leyenda{
+    display:flex;
+    gap:35px;
+
+    margin-bottom:35px;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+}
+
+.estado{
+    display:flex;
+    align-items:center;
+
+    gap:8px;
+
+    color:#666;
+
+    font-size:18px;
+}
+
+.circulo{
+    width:18px;
+    height:18px;
+
+    border-radius:50%;
+}
+
+.libre{
+    background:#b9b287;
+}
+
+.ocupada{
+    background:#ef92aa;
+}
+
+.sucia{
+    background:#efbd66;
+}
+
+.reservada{
+    background:#c8abd7;
+}
+
+/* MAPA MESAS */
+
+.mapa-mesas{
+    width:100%;
+
+    display:grid;
+
+    grid-template-columns:repeat(4,120px);
+
+    justify-content:center;
+
+    gap:35px;
+}
+
+/* MESAS */
+
+.mesa{
+    width:120px;
+    height:70px;
+
+    border-radius:20px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:28px;
+    font-weight:bold;
+
+    color:white;
+
+    box-shadow:0px 5px 12px rgba(0,0,0,.15);
+
+    transition:.3s;
+}
+
+.mesa:hover{
+    transform:translateY(-5px);
+}
+
+.libre-mesa{
+    background:#b9b287;
+}
+
+.ocupada-mesa{
+    background:#ef92aa;
+}
+
+.sucia-mesa{
+    background:#efbd66;
+}
+
+.reservada-mesa{
+    background:#c8abd7;
+}
+
+.ocupada-rect{
+    width:180px;
+    height:70px;
+
+    background:#ef92aa;
+
+    border-radius:10px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:28px;
+    font-weight:bold;
+
+    color:white;
+
+    margin:auto;
+}
+
+/* FOOTER */
+
+.footer-morado{
+    width:100%;
+
+    background:#b23563;
+
+    display:flex;
+    justify-content:flex-end;
+
+    gap:60px;
+
+    padding:18px 45px;
+
+    color:white;
+}
+
+.footer-box h4{
+    margin-bottom:8px;
+}
+
+.iconos{
+    display:flex;
+    gap:12px;
+
+    margin-top:8px;
+
+    font-size:20px;
+}
+
+.iconos i{
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+.iconos i:hover{
+    transform:scale(1.15);
+}
