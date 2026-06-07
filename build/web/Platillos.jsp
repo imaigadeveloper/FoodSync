@@ -110,7 +110,7 @@
                 con = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/FoodSync",
                     "root",
-                    "Nelly2909"
+                    "n0m3l0"
                 );
 
                 ps = con.prepareStatement(
