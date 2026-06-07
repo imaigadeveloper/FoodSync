@@ -1,4 +1,6 @@
-
+<%@page import="java.sql.*"%>
+<%@page import="modelo.Conexion"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <html>
     <head>
         <title>TODO supply a title</title>
@@ -24,7 +26,7 @@
 
         <!-- MENU -->
         <div class="menu-nav">
-            <!-- página actual -->
+            <!-- pÃ¡gina actual -->
             <a href="Inicio.jsp">Inicio</a>
             <span>|</span>
             <a href="Platillos.jsp">Platillos</a>
@@ -98,21 +100,30 @@
 
                     <!-- MESAS -->
                     <div class="mapa-mesas">
+                        <%
+                        Conexion conexion = new Conexion();
+                        Connection con = conexion.conectar();
+                        PreparedStatement ps = con.prepareStatement("SELECT * FROM Mesas ORDER BY id_mesa");
+                        ResultSet rs = ps.executeQuery();
 
-                        <div class="mesa libre-mesa">1</div>
-                        <div class="mesa ocupada-mesa">2</div>
-                        <div class="mesa sucia-mesa">3</div>
-                        <div class="mesa libre-mesa">4</div>
-                        <div class="mesa libre-mesa">5</div>
-                        <div class="mesa reservada-mesa">6</div>
-                        <div class="mesa ocupada-mesa">7</div>
-                        <div class="mesa libre-mesa">8</div>
-                        <div class="mesa libre-mesa">9</div>
-                        <div class="mesa sucia-mesa">10</div>
-                        <div class="mesa libre-mesa">11</div>
-                        <div class="mesa ocupada-rect">12</div>
+                        while(rs.next()){
+                            int mesa = rs.getInt("id_mesa");
+                            String estadoMesa = rs.getString("estado");
+                            String clase = "";
 
-                    </div>
+                            if(estadoMesa.equals("Libre")) { clase = "libre-mesa"; }
+                            else if(estadoMesa.equals("Ocupada")) { clase = "ocupada-mesa"; }
+                            else if(estadoMesa.equals("Sucia")) { clase = "sucia-mesa"; }
+                            else if(estadoMesa.equals("Reservada")) { clase = "reservada-mesa"; }
+                        %>
+                            <div class="mesa <%=clase%>"><%=mesa%></div>
+                        <%
+                        }
+                        rs.close();
+                        ps.close();
+                        con.close();
+                        %>
+                        </div>
 
                 </div>
 
@@ -135,17 +146,17 @@
 
             <div class="footer-box">
 
-                <h4>Ubicación</h4>
+                <h4>UbicaciÃ³n</h4>
 
                 <p>Av. FoodSync #128</p>
 
-                <p>Ciudad de México</p>
+                <p>Ciudad de MÃ©xico</p>
 
             </div>
 
             <div class="footer-box">
 
-                <h4>Síguenos</h4>
+                <h4>SÃ­guenos</h4>
 
                 <div class="iconos">
                     <i class="fa-brands fa-facebook-f"></i>
@@ -158,7 +169,7 @@
 
         <!-- COPYRIGHT -->
         <div class="copy">
-            © 2026 FoodSync — Todos los derechos reservados
+            Â© 2026 FoodSync â Todos los derechos reservados
         </div>
 
     </div>

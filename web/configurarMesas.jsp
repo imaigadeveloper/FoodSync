@@ -90,31 +90,63 @@ if(eliminarMesa != null){
 
 }
 %>
-<%
-String idMesa = request.getParameter("idMesa");
-String estado = request.getParameter("estado");
 
-if(idMesa != null && estado != null){
+        <%
+        String idMesa = request.getParameter("idMesa");
+        String estado = request.getParameter("estado");
 
-    Conexion conexion = new Conexion();
-    Connection con = conexion.conectar();
+        if(idMesa != null && estado != null){
 
-    PreparedStatement ps = con.prepareStatement(
-        "UPDATE Mesas SET estado=? WHERE id_mesa=?"
-    );
+            Connection con = null;
+            PreparedStatement psMesa = null;
+            PreparedStatement psReserva = null;
 
-    ps.setString(1, estado);
-    ps.setInt(2, Integer.parseInt(idMesa));
+            try {
+                Conexion conexion = new Conexion();
+                con = conexion.conectar();
 
-    ps.executeUpdate();
+                // Desactivamos el autoCommit para manejarlo como una sola transacción segura
+                con.setAutoCommit(false);
 
-    ps.close();
-    con.close();
+                // 1. Actualizar el estado de la mesa (Tu consulta original)
+                psMesa = con.prepareStatement(
+                    "UPDATE Mesas SET estado=? WHERE id_mesa=?"
+                );
+                psMesa.setString(1, estado);
+                psMesa.setInt(2, Integer.parseInt(idMesa));
+                psMesa.executeUpdate();
 
-    response.sendRedirect("configurarMesas.jsp");
-    return;
-}
-%>
+                // 2. NUEVA LÓGICA: Si la mesa se pone "Ocupada", actualizamos su reservación pendiente de hoy
+                if(estado.equals("Ocupada")){
+                    String sqlReserva = "UPDATE Reservaciones "
+                                      + "SET estado_reserva='Asistió' "
+                                      + "WHERE id_mesa=? "
+                                      + "AND estado_reserva='Pendiente' "
+                                      + "AND fecha_reserva=CURDATE()";
+
+                    psReserva = con.prepareStatement(sqlReserva);
+                    psReserva.setInt(1, Integer.parseInt(idMesa));
+                    psReserva.executeUpdate();
+                }
+
+                // Si ambas consultas se ejecutan bien, guardamos los cambios definitivamente
+                con.commit();
+
+            } catch(Exception e) {
+                if(con != null) {
+                    try { con.rollback(); } catch(SQLException ex) { ex.printStackTrace(); }
+                }
+                out.println("Error al actualizar estados: " + e.getMessage());
+            } finally {
+                if(psMesa != null) psMesa.close();
+                if(psReserva != null) psReserva.close();
+                if(con != null) con.close();
+            }
+
+            response.sendRedirect("configurarMesas.jsp");
+            return;
+        }
+        %>
 
 <!DOCTYPE html>
 <html>
@@ -198,7 +230,7 @@ function cambiarEstado(idMesa){
     <!-- MENU -->
     <div class="menu-nav">
 
-        <a href="Inicio.html">Inicio</a>
+        <a href="Inicio.jsp">Inicio</a>
         <span>|</span>
 
         <a href="Platillos.jsp">Platillos</a>
@@ -207,19 +239,19 @@ function cambiarEstado(idMesa){
         <a href="Mesas.jsp">Mesas</a>
         <span>|</span>
 
-        <a href="Reservaciones.html">Reservaciones</a>
+        <a href="Reservaciones.jsp">Reservaciones</a>
         <span>|</span>
 
-        <a href="Pedidos.html">Pedidos</a>
+        <a href="Pedidos.jsp">Pedidos</a>
         <span>|</span>
 
-        <a href="Personal.html">Personal</a>
+        <a href="Personal.jsp">Personal</a>
         <span>|</span>
 
-        <a href="Clientes.html">Clientes</a>
+        <a href="Clientes.jsp">Clientes</a>
         <span>|</span>
 
-        <a href="Ventas.html">Ventas</a>
+        <a href="Ventas.jsp">Ventas</a>
         <span>|</span>
 
         <a href="Cocina.html">Cocina</a>

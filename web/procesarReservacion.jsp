@@ -50,7 +50,7 @@
             con.commit();
 %>
             <script>
-                alert("¡Reservación guardada con éxito, bro!");
+                alert("¡Reservación guardada con éxito!");
                 window.location.href = "Mesas.jsp";
             </script>
 <%

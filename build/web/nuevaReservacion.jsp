@@ -111,7 +111,7 @@
                                 <input type="text" id="mesa_visible" readonly placeholder="Haz clic en una mesa" style="background-color: #f0f0f0; font-weight: bold; text-align: center;">
 
                                 <label>Fecha de Reserva</label>
-                                <input type="date" name="fecha_reserva" required>
+                                <input type="date" name="fecha_reserva" id="fecha_reserva" required>
 
                                 <label>Hora de Reserva</label>
                                 <input type="time" name="hora_reserva" required>
@@ -155,22 +155,41 @@
         </div>
 
         <script>
-            function seleccionarMesa(elemento) {
-                document.querySelectorAll('.mesa').forEach(m => m.classList.remove('seleccionada'));
-                elemento.classList.add('seleccionada');
-                
-                var idMesa = elemento.getAttribute('data-id');
-                document.getElementById('id_mesa').value = idMesa;
-                document.getElementById('mesa_visible').value = "Mesa N° " + idMesa;
-            }
+    // Se ejecuta en cuanto la página termina de cargar
+    window.addEventListener('DOMContentLoaded', (event) => {
+        var fechaInput = document.getElementById('fecha_reserva');
+        var hoy = new Date();
+        
+        // Ajustamos los minutos de la zona horaria local para evitar desfases de días
+        var offset = hoy.getTimezoneOffset() * 60000;
+        var fechaLocal = new Date(hoy.getTime() - offset).toISOString().split('T')[0];
+        
+        // Asignamos el valor, el mínimo y el máximo con la fecha de hoy
+        if (fechaInput) {
+            fechaInput.value = fechaLocal;
+            fechaInput.min = fechaLocal;
+            fechaInput.max = fechaLocal;
+        }
+    });
 
-            document.getElementById('formReservacion').onsubmit = function(e) {
-                var mesa = document.getElementById('id_mesa').value;
-                if(!mesa) {
-                    alert('¡Bro, selecciona una mesa del mapa primero!');
-                    e.preventDefault();
-                }
-            };
-        </script>
+    // Lógica para seleccionar la mesa visualmente
+    function seleccionarMesa(elemento) {
+        document.querySelectorAll('.mesa').forEach(m => m.classList.remove('seleccionada'));
+        elemento.classList.add('seleccionada');
+        
+        var idMesa = elemento.getAttribute('data-id');
+        document.getElementById('id_mesa').value = idMesa;
+        document.getElementById('mesa_visible').value = "Mesa N° " + idMesa;
+    }
+
+    // Validación antes de enviar el formulario
+    document.getElementById('formReservacion').onsubmit = function(e) {
+        var mesa = document.getElementById('id_mesa').value;
+        if(!mesa) {
+            alert('¡Selecciona una mesa del mapa primero!');
+            e.preventDefault();
+        }
+    };
+</script>
     </body>
 </html>
