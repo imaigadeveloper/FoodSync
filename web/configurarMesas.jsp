@@ -129,30 +129,54 @@ if(idMesa != null && estado != null){
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <script>
+<script>
 
-        function cambiarEstado(idMesa){
+function cambiarEstado(idMesa){
 
-            let estado = prompt(
-                "Selecciona el estado:\n\n" +
-                "Libre\n" +
-                "Ocupada\n" +
-                "Sucia\n" +
-                "Reservada"
-            );
+    let estado = prompt(
+        "Selecciona el estado:\n\n" +
+        "Libre\n" +
+        "Ocupada\n" +
+        "Sucia\n" +
+        "Reservada"
+    );
 
-            if(estado != null && estado != ""){
+    if(estado == null){
+        return;
+    }
 
-                window.location =
-                    "configurarMesas.jsp?idMesa=" +
-                    idMesa +
-                    "&estado=" +
-                    estado;
+    estado = estado.trim().toLowerCase();
 
-            }
-        }
+    if(estado === "libre"){
+        estado = "Libre";
+    }
+    else if(estado === "ocupada"){
+        estado = "Ocupada";
+    }
+    else if(estado === "sucia"){
+        estado = "Sucia";
+    }
+    else if(estado === "reservada"){
+        estado = "Reservada";
+    }
+    else{
 
-    </script>
+        alert("Estado inválido.");
+
+        cambiarEstado(idMesa);
+
+        return;
+    }
+
+    window.location =
+        "configurarMesas.jsp?idMesa=" +
+        idMesa +
+        "&estado=" +
+        estado;
+
+}
+
+</script>
 
 </head>
 
