@@ -198,7 +198,7 @@ function cambiarEstado(idMesa){
     <!-- MENU -->
     <div class="menu-nav">
 
-        <a href="Inicio.jsp">Inicio</a>
+        <a href="Inicio.html">Inicio</a>
         <span>|</span>
 
         <a href="Platillos.jsp">Platillos</a>
@@ -207,22 +207,22 @@ function cambiarEstado(idMesa){
         <a href="Mesas.jsp">Mesas</a>
         <span>|</span>
 
-        <a href="Reservaciones.jsp">Reservaciones</a>
+        <a href="Reservaciones.html">Reservaciones</a>
         <span>|</span>
 
-        <a href="Pedidos.jsp">Pedidos</a>
+        <a href="Pedidos.html">Pedidos</a>
         <span>|</span>
 
-        <a href="Personal.jsp">Personal</a>
+        <a href="Personal.html">Personal</a>
         <span>|</span>
 
-        <a href="Clientes.jsp">Clientes</a>
+        <a href="Clientes.html">Clientes</a>
         <span>|</span>
 
-        <a href="Ventas.jsp">Ventas</a>
+        <a href="Ventas.html">Ventas</a>
         <span>|</span>
 
-        <a href="Cocina.jsp">Cocina</a>
+        <a href="Cocina.html">Cocina</a>
 
     </div>
 

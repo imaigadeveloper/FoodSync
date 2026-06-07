@@ -31,7 +31,7 @@
         <span>|</span>
         <a href="../Platillos.jsp">Platillos</a>
         <span>|</span>
-        <a href="../Mesas.html">Mesas</a>
+        <a href="../Mesas.jsp">Mesas</a>
         <span>|</span>
         <a href="../Reservaciones.html">Reservaciones</a>
         <span>|</span>
@@ -107,7 +107,7 @@
             Connection con = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/FoodSync",
                 "root",
-                "Nelly2909"
+                "n0m3l0"
             );
 
             PreparedStatement ps = con.prepareStatement(
