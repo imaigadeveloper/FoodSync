@@ -358,32 +358,32 @@ function cambiarEstado(idMesa){
                 %>
 
                     <div class="mesa <%=clase%>"
-     style="position:relative;">
+                        style="position:relative;">
 
-    <span
-        onclick="cambiarEstado(<%=mesa%>)"
-        style="cursor:pointer;">
+                        <span
+                            onclick="cambiarEstado(<%=mesa%>)"
+                            style="cursor:pointer;">
 
-        <%=mesa%>
+                            <%=mesa%>
 
-    </span>
+                        </span>
 
-    <a href="configurarMesas.jsp?eliminarMesa=<%=mesa%>"
-       onclick="return confirm('¿Eliminar mesa <%=mesa%>?')"
-       style="
-           position:absolute;
-           top:-8px;
-           right:-8px;
-           color:red;
-           text-decoration:none;
-           font-weight:bold;
-       ">
+                        <a href="configurarMesas.jsp?eliminarMesa=<%=mesa%>"
+                           onclick="return confirm('¿Eliminar mesa <%=mesa%>?')"
+                           style="
+                               position:absolute;
+                               top:-8px;
+                               right:-8px;
+                               color:red;
+                               text-decoration:none;
+                               font-weight:bold;
+                           ">
 
-       ×
+                           ×
 
-    </a>
+                        </a>
 
-</div>
+                    </div>
 
                 <%
                 }
