@@ -58,9 +58,9 @@
                 <span>|</span>
                 <a href="Agregar.jsp" class="activo">Agregar</a>
                 <span>|</span>
-                <a href="Eliminar.html">Eliminar</a>
+                <a href="Eliminar.jsp">Eliminar</a>
                 <span>|</span>
-                <a href="Modificar.html">Modificar</a>
+                <a href="Modificar.jsp">Modificar</a>
             </div>
 
             <!-- FORMULARIO -->

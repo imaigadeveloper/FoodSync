@@ -60,7 +60,7 @@
                 <span>|</span>
                 <a href="Eliminar.jsp" class="activo">Eliminar</a>
                 <span>|</span>
-                <a href="Modificar.html">Modificar</a>
+                <a href="Modificar.jsp">Modificar</a>
             </div>
 
             <!-- FORMULARIO ELIMINAR -->

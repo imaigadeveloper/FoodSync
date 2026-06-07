@@ -1,11 +1,12 @@
 <%@page import="java.sql.*"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FoodSync - Menú de Platillos</title>
+    <title>FoodSync - MenÃº de Platillos</title>
 
     <link rel="stylesheet" href="Platillos/Platilloss.css">
 
@@ -37,8 +38,8 @@
 
             <span>|</span>
             
-            <!-- página actual -->
-            <a href="Platillos.html">Platillos</a>
+            <!-- pÃ¡gina actual -->
+            <a href="Platillos.jsp">Platillos</a>
 
             <span>|</span>
 
@@ -78,7 +79,7 @@
         <section class="panel-principal">
 
             <h1 class="titulo-menu">
-                Menú de platillos
+                MenÃº de platillos
             </h1>
 
             <!-- BARRA -->
@@ -173,17 +174,17 @@
 
             <div class="footer-box">
 
-                <h4>Ubicación</h4>
+                <h4>UbicaciÃ³n</h4>
 
                 <p>Av. FoodSync #128</p>
 
-                <p>Ciudad de México</p>
+                <p>Ciudad de MÃ©xico</p>
 
             </div>
 
             <div class="footer-box">
 
-                <h4>Síguenos</h4>
+                <h4>SÃ­guenos</h4>
 
                 <div class="iconos">
                     <i class="fa-brands fa-facebook-f"></i>
@@ -196,9 +197,8 @@
 
         <!-- COPYRIGHT -->
         <div class="copy">
-            © 2026 FoodSync ? Todos los derechos reservados
+            Â© 2026 FoodSync â€” Todos los derechos reservados
         </div>
-
 
 </div>
 
