@@ -22,7 +22,7 @@
 
         <!-- MENU -->
         <div class="menu-nav">
-            <!-- pÃ¡gina actual -->
+            <!-- página actual -->
             <a href="Inicio.html">Inicio</a>
             <span>|</span>
             <a href="Platillos.jsp">Platillos</a>
@@ -50,30 +50,8 @@
                 <!-- BIENVENIDA -->
                 <div class="Mesas">
                     <h1>
-                      Nueva reservaciÃ³n
+                      Nueva reservación
                     </h1>
-                </div>
-                
-                <div class="confirmacion">
-
-                    <label>
-                        Confirmar modificaciÃ²n
-                        <br>
-                        con clave de permiso
-                    </label>
-
-                    <div class="input-password">
-
-                        <input type="password">
-
-                        <i class="fa-solid fa-eye"></i>
-
-                    </div>
-
-                    <button>
-                        Confirmar
-                    </button>
-
                 </div>
                 
                 <!-- MAPA -->
@@ -177,17 +155,17 @@
 
             <div class="footer-box">
 
-                <h4>UbicaciÃ³n</h4>
+                <h4>Ubicación</h4>
 
                 <p>Av. FoodSync #128</p>
 
-                <p>Ciudad de MÃ©xico</p>
+                <p>Ciudad de México</p>
 
             </div>
 
             <div class="footer-box">
 
-                <h4>SÃ­guenos</h4>
+                <h4>Síguenos</h4>
 
                 <div class="iconos">
                     <i class="fa-brands fa-facebook-f"></i>
@@ -200,7 +178,7 @@
 
         <!-- COPYRIGHT -->
         <div class="copy">
-            Â© 2026 FoodSync â€” Todos los derechos reservados
+            © 2026 FoodSync ? Todos los derechos reservados
         </div>
 
     </div>
