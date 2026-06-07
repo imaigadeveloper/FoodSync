@@ -254,7 +254,7 @@ function cambiarEstado(idMesa){
         <a href="Ventas.jsp">Ventas</a>
         <span>|</span>
 
-        <a href="Cocina.html">Cocina</a>
+        <a href="Cocina.jsp">Cocina</a>
 
     </div>
 
