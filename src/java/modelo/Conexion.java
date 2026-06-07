@@ -16,7 +16,7 @@ public class Conexion {
             con = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/foodsync",
                 "root",
-                "Emipro"
+                "n0m3l0"
             );
 
             System.out.println("Conexion exitosa");
