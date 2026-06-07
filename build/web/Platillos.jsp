@@ -84,13 +84,13 @@
             <!-- BARRA -->
 
             <div class="barra-acciones">
-                <a href="Platillos.html" class="activo" >Consultar</a>
+                <a href="Platillos.jsp" class="activo" >Consultar</a>
                 <span>|</span>
                 <a href="Platillos/Agregar.jsp">Agregar</a>
                 <span>|</span>
-                <a href="Platillos/Eliminar.html" >Eliminar</a>
+                <a href="Platillos/Eliminar.jsp" >Eliminar</a>
                 <span>|</span>
-                <a href="Platillos/Modificar.html">Modificar</a>
+                <a href="Platillos/Modificar.jsp">Modificar</a>
             </div>
             
             <!-- TARJETAS -->
