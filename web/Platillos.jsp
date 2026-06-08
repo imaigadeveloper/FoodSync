@@ -47,7 +47,7 @@
 
             <span>|</span>
 
-            <a href="Reservaciones.jspl">Reservaciones</a>
+            <a href="Reservaciones.jsp">Reservaciones</a>
  
             <span>|</span>
 
