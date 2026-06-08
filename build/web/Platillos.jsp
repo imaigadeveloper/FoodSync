@@ -34,7 +34,7 @@
 
      <div class="menu-nav">
             
-            <a href="Inicio.html">Inicio</a>
+            <a href="Inicio.jsp">Inicio</a>
 
             <span>|</span>
             
@@ -47,27 +47,27 @@
 
             <span>|</span>
 
-            <a href="Reservaciones.html">Reservaciones</a>
+            <a href="Reservaciones.jsp">Reservaciones</a>
  
             <span>|</span>
 
-            <a href="Pedidos.html">Pedidos</a>
+            <a href="Pedidos.jsp">Pedidos</a>
 
             <span>|</span>
 
-            <a href="Personal.html">Personal</a>
+            <a href="Personal.jsp">Personal</a>
 
             <span>|</span>
 
-            <a href="Clientes.html">Clientes</a>
+            <a href="Clientes.jsp">Clientes</a>
 
             <span>|</span>
 
-            <a href="Ventas.html">Ventas</a>
+            <a href="Ventas.jsp">Ventas</a>
 
             <span>|</span>
 
-            <a href="Cocina.html">Cocina</a>
+            <a href="Cocina.jsp">Cocina</a>
 
         </div>
 
