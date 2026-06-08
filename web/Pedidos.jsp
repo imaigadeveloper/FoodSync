@@ -27,70 +27,101 @@
         conn = conClase.conectar();
         
         // -----------------------------------------------------------------
-        // LÓGICA PARA AGREGAR PLATILLO (POST)
+        // PROCESAR ACCIONES (POST)
         // -----------------------------------------------------------------
         String accion = request.getParameter("accion");
-        if (accion != null && accion.equals("agregar") && mesaSeleccionada != null) {
-            String nombrePlatillo = request.getParameter("nombre_platillo").trim();
+        if (accion != null && mesaSeleccionada != null) {
             
-            // 1. Buscar si el platillo existe
-            PreparedStatement psPlatillo = conn.prepareStatement("SELECT id_platillo, precio FROM Platillos WHERE nombre = ? AND estado = 'Disponible'");
-            psPlatillo.setString(1, nombrePlatillo);
-            ResultSet rsPlatillo = psPlatillo.executeQuery();
-            
-            if (rsPlatillo.next()) {
-                int idPlatillo = rsPlatillo.getInt("id_platillo");
+            // ACCIÓN: AGREGAR PLATILLO
+            if (accion.equals("agregar")) {
+                String nombrePlatillo = request.getParameter("nombre_platillo").trim();
+                int cantidad = Integer.parseInt(request.getParameter("cantidad"));
+                String notasChef = request.getParameter("notas_chef");
                 
-                // 2. Buscar si la mesa ya tiene un pedido activo (no pagado)
-                PreparedStatement psPedido = conn.prepareStatement("SELECT id_pedido FROM Pedidos WHERE id_mesa = ? AND estado_pedido != 'Pagado' LIMIT 1");
-                psPedido.setInt(1, Integer.parseInt(mesaSeleccionada));
-                ResultSet rsPedido = psPedido.executeQuery();
+                // 1. Buscar si el platillo existe y está disponible
+                PreparedStatement psPlatillo = conn.prepareStatement("SELECT id_platillo, precio FROM Platillos WHERE nombre = ? AND estado = 'Disponible'");
+                psPlatillo.setString(1, nombrePlatillo);
+                ResultSet rsPlatillo = psPlatillo.executeQuery();
                 
-                int idPedido = 0;
-                if (rsPedido.next()) {
-                    idPedido = rsPedido.getInt("id_pedido");
-                } else {
-                    // Si no tiene pedido activo, se crea uno nuevo (por defecto id_personal temporal 'M001')
-                    PreparedStatement psCrearPedido = conn.prepareStatement("INSERT INTO Pedidos (id_mesa, id_personal, estado_pedido) VALUES (?, 'M001', 'Pendiente')", Statement.RETURN_GENERATED_KEYS);
-                    psCrearPedido.setInt(1, Integer.parseInt(mesaSeleccionada));
-                    psCrearPedido.executeUpdate();
-                    ResultSet rsKeys = psCrearPedido.getGeneratedKeys();
-                    if(rsKeys.next()){
-                        idPedido = rsKeys.getInt(1);
+                if (rsPlatillo.next()) {
+                    int idPlatillo = rsPlatillo.getInt("id_platillo");
+                    
+                    // 2. Buscar si la mesa ya tiene un pedido ACTIVO (Pendiente)
+                    PreparedStatement psPedido = conn.prepareStatement("SELECT id_pedido FROM Pedidos WHERE id_mesa = ? AND estado_pedido = 'Pendiente' LIMIT 1");
+                    psPedido.setInt(1, Integer.parseInt(mesaSeleccionada));
+                    ResultSet rsPedido = psPedido.executeQuery();
+                    
+                    int idPedido = 0;
+                    if (rsPedido.next()) {
+                        idPedido = rsPedido.getInt("id_pedido");
+                    } else {
+                        // Si no tiene pedido activo, se crea uno nuevo (por defecto id_personal temporal 'M001')
+                        PreparedStatement psCrearPedido = conn.prepareStatement("INSERT INTO Pedidos (id_mesa, id_personal, estado_pedido) VALUES (?, 'M001', 'Pendiente')", Statement.RETURN_GENERATED_KEYS);
+                        psCrearPedido.setInt(1, Integer.parseInt(mesaSeleccionada));
+                        psCrearPedido.executeUpdate();
+                        ResultSet rsKeys = psCrearPedido.getGeneratedKeys();
+                        if(rsKeys.next()){
+                            idPedido = rsKeys.getInt(1);
+                        }
+                        rsKeys.close();
+                        psCrearPedido.close();
+                        
+                        // Actualizar estado de la mesa a Ocupada
+                        PreparedStatement psActMesa = conn.prepareStatement("UPDATE Mesas SET estado = 'Ocupada' WHERE id_mesa = ?");
+                        psActMesa.setInt(1, Integer.parseInt(mesaSeleccionada));
+                        psActMesa.executeUpdate();
+                        psActMesa.close();
                     }
-                    // Actualizar estado de la mesa a Ocupada
-                    PreparedStatement psActMesa = conn.prepareStatement("UPDATE Mesas SET estado = 'Ocupada' WHERE id_mesa = ?");
-                    psActMesa.setInt(1, Integer.parseInt(mesaSeleccionada));
-                    psActMesa.executeUpdate();
+                    rsPedido.close();
+                    psPedido.close();
+                    
+                    // 3. Insertar en el detalle
+                    PreparedStatement psInsertDetalle = conn.prepareStatement("INSERT INTO Detalle_Pedidos (id_pedido, id_platillo, cantidad, notas_chef) VALUES (?, ?, ?, ?)");
+                    psInsertDetalle.setInt(1, idPedido);
+                    psInsertDetalle.setInt(2, idPlatillo);
+                    psInsertDetalle.setInt(3, cantidad);
+                    psInsertDetalle.setString(4, (notasChef != null) ? notasChef.trim() : "");
+                    psInsertDetalle.executeUpdate();
+                    psInsertDetalle.close();
+                    
+                } else {
+                    errorPlatillo = "¡Error! El platillo '" + nombrePlatillo + "' no existe o no está disponible. Verifícalo bien.";
                 }
-                
-                // 3. Insertar en el detalle (Cantidad 1 por defecto al escribirlo)
-                PreparedStatement psInsertDetalle = conn.prepareStatement("INSERT INTO Detalle_Pedidos (id_pedido, id_platillo, cantidad) VALUES (?, ?, 1)");
-                psInsertDetalle.setInt(1, idPedido);
-                psInsertDetalle.setInt(2, idPlatillo);
-                psInsertDetalle.executeUpdate();
-                
-            } else {
-                errorPlatillo = "¡Error! El platillo '" + nombrePlatillo + "' no existe o no está disponible. Verifícalo bien.";
+                rsPlatillo.close();
+                psPlatillo.close();
+            } 
+            
+            // ACCIÓN: ELIMINAR PLATILLO DEL DETALLE
+            else if (accion.equals("eliminar_platillo")) {
+                String idDetalleStr = request.getParameter("id_detalle");
+                if (idDetalleStr != null) {
+                    PreparedStatement psDelPlatillo = conn.prepareStatement("DELETE FROM Detalle_Pedidos WHERE id_detalle = ?");
+                    psDelPlatillo.setInt(1, Integer.parseInt(idDetalleStr));
+                    psDelPlatillo.executeUpdate();
+                    psDelPlatillo.close();
+                }
             }
-        } else if (accion != null && accion.equals("cerrar_pedido") && mesaSeleccionada != null) {
-            // 1. Cambiamos el estado del pedido a 'Entregado' (listo para caja)
-            String sqlCerrar = "UPDATE Pedidos SET estado_pedido = 'Entregado' WHERE id_mesa = ? AND estado_pedido != 'Pagado'";
-            PreparedStatement psCerrar = conn.prepareStatement(sqlCerrar);
-            psCerrar.setInt(1, Integer.parseInt(mesaSeleccionada));
-            psCerrar.executeUpdate();
-            psCerrar.close();
+            
+            // ACCIÓN: CERRAR CUENTA
+            else if (accion.equals("cerrar_pedido")) {
+                // 1. Cambiamos el estado del pedido actual a 'Entregado'
+                String sqlCerrar = "UPDATE Pedidos SET estado_pedido = 'Entregado' WHERE id_mesa = ? AND estado_pedido = 'Pendiente'";
+                PreparedStatement psCerrar = conn.prepareStatement(sqlCerrar);
+                psCerrar.setInt(1, Integer.parseInt(mesaSeleccionada));
+                psCerrar.executeUpdate();
+                psCerrar.close();
 
-            // 2. Cambiamos el estado de la mesa a 'Sucia' o 'Libre' para que se libere en el mapa de mesas
-            String sqlLiberarMesa = "UPDATE Mesas SET estado = 'Sucia' WHERE id_mesa = ?";
-            PreparedStatement psLib = conn.prepareStatement(sqlLiberarMesa);
-            psLib.setInt(1, Integer.parseInt(mesaSeleccionada));
-            psLib.executeUpdate();
-            psLib.close();
+                // 2. Cambiamos el estado de la mesa a 'Sucia'
+                String sqlLiberarMesa = "UPDATE Mesas SET estado = 'Sucia' WHERE id_mesa = ?";
+                PreparedStatement psLib = conn.prepareStatement(sqlLiberarMesa);
+                psLib.setInt(1, Integer.parseInt(mesaSeleccionada));
+                psLib.executeUpdate();
+                psLib.close();
 
-            // Redireccionamos a la misma página limpia (sin mesa seleccionada) para refrescar el menú izquierdo
-            response.sendRedirect("Pedidos.jsp");
-            return; // Detiene la ejecución del resto del JSP tras redireccionar
+                // Redireccionamos limpio
+                response.sendRedirect("Pedidos.jsp");
+                return; 
+            }
         }
 %>
 
@@ -121,10 +152,9 @@
                 <h1>Panel de Pedidos</h1>
             </div>
 
-                <div class="mesas-ocupadas">
+            <div class="mesas-ocupadas">
                 <h2>MESAS OCUPADAS</h2>
                 <%
-                    // Nueva consulta: Buscamos directamente en la tabla Mesas las que estén 'Ocupada'
                     String sqlMesas = "SELECT id_mesa FROM Mesas WHERE estado = 'Ocupada' ORDER BY id_mesa ASC";
                     Statement stmtMesas = conn.createStatement();
                     ResultSet rsMesas = stmtMesas.executeQuery(sqlMesas);
@@ -134,10 +164,9 @@
                         hayMesas = true;
                         int idMesaM = rsMesas.getInt("id_mesa");
                         
-                        // Opcional: Averiguar el estado del pedido de esta mesa si existe
                         String estadoP = "Pendiente"; 
                         PreparedStatement psEstPed = conn.prepareStatement(
-                            "SELECT estado_pedido FROM Pedidos WHERE id_mesa = ? AND estado_pedido != 'Pagado' LIMIT 1"
+                            "SELECT estado_pedido FROM Pedidos WHERE id_mesa = ? AND estado_pedido = 'Pendiente' LIMIT 1"
                         );
                         psEstPed.setInt(1, idMesaM);
                         ResultSet rsEstPed = psEstPed.executeQuery();
@@ -168,10 +197,15 @@
                     <h3>Mesa <%= mesaSeleccionada %></h3>
                     
                     <%
-                        String sqlDetalle = "SELECT p.nombre, p.precio, dp.cantidad FROM Detalle_Pedidos dp " +
+                        // Agregamos dp.id_detalle a la consulta para poder identificar qué fila borrar
+                        String sqlDetalle = "SELECT dp.id_detalle, p.nombre, p.precio, dp.cantidad, dp.notes_chef FROM Detalle_Pedidos dp " +
                                             "JOIN Platillos p ON dp.id_platillo = p.id_platillo " +
                                             "JOIN Pedidos pe ON dp.id_pedido = pe.id_pedido " +
-                                            "WHERE pe.id_mesa = ? AND pe.estado_pedido != 'Pagado'";
+                                            "WHERE pe.id_mesa = ? AND pe.estado_pedido = 'Pendiente'";
+                        // Nota: Si en tu base de datos la columna es 'notas_chef', asegúrate de que abajo se llame igual. 
+                        // Corregido a 'notas_chef' basándome en tu script de SQL:
+                        sqlDetalle = sqlDetalle.replace("dp.notes_chef", "dp.notas_chef");
+
                         PreparedStatement psDet = conn.prepareStatement(sqlDetalle);
                         psDet.setInt(1, Integer.parseInt(mesaSeleccionada));
                         ResultSet rsDet = psDet.executeQuery();
@@ -181,28 +215,44 @@
                         
                         while(rsDet.next()) {
                             tieneProductos = true;
+                            int idDetalle = rsDet.getInt("id_detalle");
                             String nombreP = rsDet.getString("nombre");
                             double precioP = rsDet.getDouble("precio");
                             int cant = rsDet.getInt("cantidad");
+                            String notas = rsDet.getString("notas_chef");
                             double subtotal = precioP * cant;
                             totalCuenta += subtotal;
                     %>
-                            <div class="producto">
-                                <span><%= nombreP %> (x<%= cant %>)</span>
-                                <span>$<%= subtotal %></span>
+                            <div class="producto" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <div style="flex-grow: 1;">
+                                    <strong><%= nombreP %> (x<%= cant %>)</strong>
+                                    <% if(notas != null && !notas.isEmpty()) { %>
+                                        <br><small style="color: #d9534f; font-style: italic;">* <%= notas %></small>
+                                    <% } %>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <span>$<%= subtotal %></span>
+                                    
+                                    <form action="Pedidos.jsp?mesa=<%= mesaSeleccionada %>" method="POST" style="margin: 0;" onsubmit="return confirm('¿Seguro que deseas quitar este platillo del pedido?');">
+                                        <input type="hidden" name="accion" value="eliminar_platillo">
+                                        <input type="hidden" name="id_detalle" value="<%= idDetalle %>">
+                                        <button type="submit" style="background: none; border: none; color: #d9534f; cursor: pointer; font-size: 1.1rem;">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                     <% 
                         } 
+                        rsDet.close();
+                        psDet.close();
+
                         if(!tieneProductos) { 
                     %>
                             <p style="color:gray; font-style:italic;">La mesa está asignada pero aún no tiene platillos.</p>
                     <% } %>
 
-                    <div class="producto total">
-                        <span>Total</span>
-                        <span>$<%= totalCuenta %></span>
-                    </div>
-                    <div class="producto total">
+                    <div class="producto total" style="margin-top: 15px; border-top: 2px solid #ccc; padding-top: 10px;">
                         <span>Total</span>
                         <span>$<%= totalCuenta %></span>
                     </div>
@@ -216,15 +266,27 @@
                         </form>
                     <% } %>
 
-                    <form action="Pedidos.jsp?mesa=<%= mesaSeleccionada %>" method="POST" class="agregar-platillo">
-                    <form action="Pedidos.jsp?mesa=<%= mesaSeleccionada %>" method="POST" class="agregar-platillo">
+                    <form action="Pedidos.jsp?mesa=<%= mesaSeleccionada %>" method="POST" class="agregar-platillo" style="margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 15px;">
                         <input type="hidden" name="accion" value="agregar">
                         <div>
-                            <label><strong>Agregar</strong></label>
-                            <br>
-                            <label>Nombre platillo:</label>
+                            <label><strong>Agregar Platillo</strong></label>
                         </div>
-                        <input type="text" name="nombre_platillo" required placeholder="Ej. Enchiladas Suizas">
+                        
+                        <div style="margin-bottom: 10px;">
+                            <label>Nombre del platillo:</label>
+                            <input type="text" name="nombre_platillo" required placeholder="Ej. Enchiladas Suizas" style="width: 100%; max-width: 300px;">
+                        </div>
+
+                        <div style="margin-bottom: 10px;">
+                            <label>Cantidad:</label>
+                            <input type="number" name="cantidad" value="1" min="1" required style="width: 60px;">
+                        </div>
+
+                        <div style="margin-bottom: 10px;">
+                            <label>Notas para el Chef:</label>
+                            <input type="text" name="notas_chef" placeholder="Ej. Sin cebolla, extra salsa" style="width: 100%; max-width: 300px;">
+                        </div>
+
                         <input type="submit" value="Confirmar pedido" class="btn-confirmar">
                     </form>
 
@@ -278,7 +340,6 @@
     } catch (Exception e) {
         e.printStackTrace();
     } finally {
-        // Cerramos la conexión de forma segura
         if (conn != null) conn.close();
     }
 %>
