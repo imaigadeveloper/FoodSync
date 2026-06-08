@@ -9,18 +9,16 @@
     <meta charset="UTF-8">
     <title>Pedidos - FoodSync</title>
     <link rel="stylesheet" href="Pedidos.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;500;700&family=Pacifico&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
 <%
     Connection conn = null;
-    
     // Capturar la mesa seleccionada actual
     String mesaSeleccionada = request.getParameter("mesa");
     String errorPlatillo = null;
-    
     try {
         // INSTANCIAMOS Y USAMOS CLASE CONEXION
         Conexion conClase = new Conexion();
@@ -36,7 +34,7 @@
             if (accion.equals("agregar")) {
                 String nombrePlatillo = request.getParameter("nombre_platillo").trim();
                 int cantidad = Integer.parseInt(request.getParameter("cantidad"));
-                String notasChef = request.getParameter("notas_chef");
+                String notesChef = request.getParameter("notas_chef"); // Se captura el parámetro del formulario
                 
                 // 1. Buscar si el platillo existe y está disponible
                 PreparedStatement psPlatillo = conn.prepareStatement("SELECT id_platillo, precio FROM Platillos WHERE nombre = ? AND estado = 'Disponible'");
@@ -46,8 +44,10 @@
                 if (rsPlatillo.next()) {
                     int idPlatillo = rsPlatillo.getInt("id_platillo");
                     
-                    // 2. Buscar si la mesa ya tiene un pedido ACTIVO (Pendiente)
-                    PreparedStatement psPedido = conn.prepareStatement("SELECT id_pedido FROM Pedidos WHERE id_mesa = ? AND estado_pedido = 'Pendiente' LIMIT 1");
+                    // CORRECCIÓN 1: Buscar el pedido activo en cualquiera de los tres estados de cocina
+                    PreparedStatement psPedido = conn.prepareStatement(
+                        "SELECT id_pedido FROM Pedidos WHERE id_mesa = ? AND estado_pedido IN ('Pendiente', 'En cocina', 'Listo') LIMIT 1"
+                    );
                     psPedido.setInt(1, Integer.parseInt(mesaSeleccionada));
                     ResultSet rsPedido = psPedido.executeQuery();
                     
@@ -80,10 +80,9 @@
                     psInsertDetalle.setInt(1, idPedido);
                     psInsertDetalle.setInt(2, idPlatillo);
                     psInsertDetalle.setInt(3, cantidad);
-                    psInsertDetalle.setString(4, (notasChef != null) ? notasChef.trim() : "");
+                    psInsertDetalle.setString(4, (notesChef != null) ? notesChef.trim() : "");
                     psInsertDetalle.executeUpdate();
                     psInsertDetalle.close();
-                    
                 } else {
                     errorPlatillo = "¡Error! El platillo '" + nombrePlatillo + "' no existe o no está disponible. Verifícalo bien.";
                 }
@@ -104,8 +103,8 @@
             
             // ACCIÓN: CERRAR CUENTA
             else if (accion.equals("cerrar_pedido")) {
-                // 1. Cambiamos el estado del pedido actual a 'Entregado'
-                String sqlCerrar = "UPDATE Pedidos SET estado_pedido = 'Entregado' WHERE id_mesa = ? AND estado_pedido = 'Pendiente'";
+                // CORRECCIÓN 2: Cambiamos el estado del pedido actual a 'Entregado' buscando en cualquiera de los estados activos
+                String sqlCerrar = "UPDATE Pedidos SET estado_pedido = 'Entregado' WHERE id_mesa = ? AND estado_pedido IN ('Pendiente', 'En cocina', 'Listo')";
                 PreparedStatement psCerrar = conn.prepareStatement(sqlCerrar);
                 psCerrar.setInt(1, Integer.parseInt(mesaSeleccionada));
                 psCerrar.executeUpdate();
@@ -159,14 +158,14 @@
                     Statement stmtMesas = conn.createStatement();
                     ResultSet rsMesas = stmtMesas.executeQuery(sqlMesas);
                     boolean hayMesas = false;
-                    
                     while(rsMesas.next()) {
                         hayMesas = true;
                         int idMesaM = rsMesas.getInt("id_mesa");
                         
                         String estadoP = "Pendiente"; 
+                        // CORRECCIÓN 3: Traer el estado real del pedido activo para mostrarlo en la barra lateral del mesero
                         PreparedStatement psEstPed = conn.prepareStatement(
-                            "SELECT estado_pedido FROM Pedidos WHERE id_mesa = ? AND estado_pedido = 'Pendiente' LIMIT 1"
+                            "SELECT estado_pedido FROM Pedidos WHERE id_mesa = ? AND estado_pedido IN ('Pendiente', 'En cocina', 'Listo') LIMIT 1"
                         );
                         psEstPed.setInt(1, idMesaM);
                         ResultSet rsEstPed = psEstPed.executeQuery();
@@ -197,14 +196,11 @@
                     <h3>Mesa <%= mesaSeleccionada %></h3>
                     
                     <%
-                        // Agregamos dp.id_detalle a la consulta para poder identificar qué fila borrar
-                        String sqlDetalle = "SELECT dp.id_detalle, p.nombre, p.precio, dp.cantidad, dp.notes_chef FROM Detalle_Pedidos dp " +
+                        // Consulta para traer los platillos de la mesa que correspondan al pedido activo
+                        String sqlDetalle = "SELECT dp.id_detalle, p.nombre, p.precio, dp.cantidad, dp.notas_chef FROM Detalle_Pedidos dp " +
                                             "JOIN Platillos p ON dp.id_platillo = p.id_platillo " +
                                             "JOIN Pedidos pe ON dp.id_pedido = pe.id_pedido " +
-                                            "WHERE pe.id_mesa = ? AND pe.estado_pedido = 'Pendiente'";
-                        // Nota: Si en tu base de datos la columna es 'notas_chef', asegúrate de que abajo se llame igual. 
-                        // Corregido a 'notas_chef' basándome en tu script de SQL:
-                        sqlDetalle = sqlDetalle.replace("dp.notes_chef", "dp.notas_chef");
+                                            "WHERE pe.id_mesa = ? AND pe.estado_pedido IN ('Pendiente', 'En cocina', 'Listo')";
 
                         PreparedStatement psDet = conn.prepareStatement(sqlDetalle);
                         psDet.setInt(1, Integer.parseInt(mesaSeleccionada));
@@ -212,7 +208,6 @@
                         
                         double totalCuenta = 0;
                         boolean tieneProductos = false;
-                        
                         while(rsDet.next()) {
                             tieneProductos = true;
                             int idDetalle = rsDet.getInt("id_detalle");
@@ -233,7 +228,8 @@
                                 <div style="display: flex; align-items: center; gap: 15px;">
                                     <span>$<%= subtotal %></span>
                                     
-                                    <form action="Pedidos.jsp?mesa=<%= mesaSeleccionada %>" method="POST" style="margin: 0;" onsubmit="return confirm('¿Seguro que deseas quitar este platillo del pedido?');">
+                                    <form action="Pedidos.jsp?mesa=<%= mesaSeleccionada %>" method="POST" style="margin: 0;"
+                                          onsubmit="return confirm('¿Seguro que deseas quitar este platillo del pedido?');">
                                         <input type="hidden" name="accion" value="eliminar_platillo">
                                         <input type="hidden" name="id_detalle" value="<%= idDetalle %>">
                                         <button type="submit" style="background: none; border: none; color: #d9534f; cursor: pointer; font-size: 1.1rem;">
