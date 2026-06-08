@@ -90,7 +90,7 @@
         <a href="Reservaciones.jsp">Reservaciones</a> <span>|</span>
         <a href="Pedidos.jsp">Pedidos</a> <span>|</span>
         <a href="Personal.jsp">Personal</a> <span>|</span>
-        <a href="Clientes.jsp">Clientes</a> <span>|</span>
+        <a href="Clientes.html">Clientes</a> <span>|</span>
         <a href="Ventas.jsp">Ventas</a> <span>|</span>
         <a href="Cocina.jsp" class="activo">Cocina</a>
     </div>

@@ -13,14 +13,17 @@
             <%
                 String clave = request.getParameter("Id_Per");
                 String passConfirm = request.getParameter("pass_Confirm");
+                String nomPersonal = request.getParameter("nomPer");
                 String puestoPer = request.getParameter("puesPer");
+                String edoPer = request.getParameter("estPer");
                 String horario = request.getParameter("horarioPer");
                 Connection con = null;
                 Statement ps = null;
                 ResultSet rs = null;
                 
                 if (clave != null && !clave.trim().isEmpty() && passConfirm != null && !passConfirm.trim().isEmpty() && 
-                    puestoPer != null && !puestoPer.trim().isEmpty() && horario != null && !horario.trim().isEmpty()) {
+                    puestoPer != null && !puestoPer.trim().isEmpty() && horario != null && !horario.trim().isEmpty() && 
+                    nomPersonal != null && !nomPersonal.trim().isEmpty() && edoPer != null && !edoPer.trim().isEmpty()) {
                     try{
                         Class.forName("com.mysql.cj.jdbc.Driver");
                         con = DriverManager.getConnection("jdbc:mysql://localhost/FoodSync?autoReconnect=true&useSSL=false",
@@ -36,6 +39,21 @@
                         }
                         else{
                             String passBD = rs.getString("password_token");
+                            String nomBD = rs.getString("nombre");
+                            int puestoBD = rs.getInt("id_puesto");
+                            int estadoBD = rs.getInt("id_estado");
+                            String horarioBD = rs.getString("horario");
+
+                            boolean datosCorrectos = true;
+
+                            if (!nomBD.equals(nomPersonal) || puestoBD != Integer.parseInt(puestoPer)
+                                || estadoBD != Integer.parseInt(edoPer) || !horarioBD.equals(horario)) {
+                                datosCorrectos = false;
+                                out.println("<script>");
+                                out.println("alert('Los datos ingresados no coinciden con la base de datos.');");
+                                out.println("window.location.href='administrarPersonal.html';");
+                                out.println("</script>");
+                               }
                             
                             if(passBD.equals(passConfirm)){
                             

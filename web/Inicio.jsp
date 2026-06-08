@@ -65,11 +65,11 @@
 
             <span>|</span>
 
-            <a href="Clientes.jsp">Clientes</a>
+            <a href="Clientes.html">Clientes</a>
 
             <span>|</span>
 
-            <a href="Ventas.jspl">Ventas</a>
+            <a href="Ventas.jsp">Ventas</a>
 
             <span>|</span>
 

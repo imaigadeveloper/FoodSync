@@ -62,13 +62,13 @@
         <a href="Reservaciones.jsp">Reservaciones</a>
         <span>|</span>
 
-        <a href="Pedidos.jspl">Pedidos</a>
+        <a href="Pedidos.jsp">Pedidos</a>
         <span>|</span>
 
         <a href="Personal.jsp">Personal</a>
         <span>|</span>
 
-        <a href="Clientes.jsp" class="activo">Clientes</a>
+        <a href="Clientes.html" class="activo">Clientes</a>
         <span>|</span>
 
         <a href="Ventas.jsp">Ventas</a>
@@ -89,73 +89,67 @@
                 <h1>Administrar clientes</h1>
 
                 <div class="panel-admin">
+                    <form method="post">
+                        <div class="datos-cliente">
+                            <h2>Datos del Cliente</h2>
 
-                    <div class="datos-cliente">
+                            <div class="campo">
+                                <label>Nombre:</label>
+                                <input type="text" name="nomCliente">
+                            </div>
 
-                        <h2>Datos del Cliente</h2>
 
-                        <div class="campo">
-                            <label>Nombre:</label>
-                            <input type="text">
-                        </div>
-
-                        <div class="campo">
-                            <label>Teléfono:</label>
-                            <input type="text">
-                        </div>
-
-                        <div class="campo">
-                            <label>Email:</label>
-                            <input type="email">
-                        </div>
-
-                        <div class="campo">
-                            <label>Puntos:</label>
-                            <input type="number">
-                        </div>
-
-                    </div>
-
-                    <div class="confirmacion">
-
-                        <label>
-                            Confirmar modificación
-                            <br>
-                            con clave de permiso
-                        </label>
-
-                        <div class="input-password">
-
-                            <input type="password"
-                                   id="password">
-
-                            <i class="fa-solid fa-eye"
-                               onclick="mostrarPassword()"></i>
+                            <div class="campo">
+                                <label>Email:</label>
+                                <input type="email" name="emailCliente">
+                            </div>
+                            
+                            <div class="campo">
+                                <label>Puntos:</label>
+                                <input type="number" name="puntosCl">
+                            </div>
 
                         </div>
 
-                        <input type="button"
-                               value="confirmar"
-                               class="confirmar">
+                        <div class="confirmacion">
 
-                    </div>
+                            <label>
+                                Confirmar modificación
+                                <br>
+                                con clave de permiso
+                            </label>
 
-                    <div class="crud-botones">
+                            <div class="input-password">
 
-                        <input type="button"
-                               value="Eliminar"
-                               class="crud-btn">
+                                <input type="password"
+                                       id="password"
+                                       name="pass_Confirm"
+                                       required placeholder="Escribe tu contraseña">
 
-                        <input type="button"
-                               value="Actualizar"
-                               class="crud-btn">
+                                <i class="fa-solid fa-eye"
+                                   onclick="mostrarPassword()"></i>
 
-                        <input type="button"
-                               value="Añadir"
-                               class="crud-btn">
+                            </div>
 
-                    </div>
+                        </div>
 
+                        <div class="crud-botones">
+
+                            <button type="submit"
+                                   value="Eliminar"
+                                   formaction="eliminarCl.jsp"
+                                   class="crud-btn">Eliminar</button>
+                            <button type="submit"
+                                   value="Actualizar"
+                                   formaction="actualizarCl.jsp"
+                                   class="crud-btn">Actualizar</button>
+                            <button type="submit"
+                                   value="Añadir"
+                                   formaction="añadirCl.jsp"
+                                   class="crud-btn">Añadir</button>
+
+                        </div>
+                    </form>    
                 </div>
 
             </div>

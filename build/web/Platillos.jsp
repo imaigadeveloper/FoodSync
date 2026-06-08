@@ -59,7 +59,7 @@
 
             <span>|</span>
 
-            <a href="Clientes.jsp">Clientes</a>
+            <a href="Clientes.html">Clientes</a>
 
             <span>|</span>
 
