@@ -1,3 +1,6 @@
+<%@page import="java.sql.*"%>
+<%@page import="modelo.Conexion"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -37,7 +40,7 @@
 
         <!-- MENU -->
         <div class="menu-nav">
-            <!-- página actual -->
+            <!-- pÃ¡gina actual -->
             <a href="Inicio.html">Inicio</a>
 
             <span>|</span>
@@ -88,7 +91,7 @@
                     </h1>
 
                     <p>
-                        Aquí tienes resumen de la actividad de hoy
+                        Aqui tienes resumen de la actividad de hoy
                     </p>
 
                 </div>
@@ -98,49 +101,57 @@
 
                     <!-- CARD -->
                     <div class="card-ocupadas">
-
                         <div class="icono-mesa">
-
                             <i class="fa-solid fa-chair"></i>
-
                         </div>
 
                         <div class="info-mesas">
-
-                            <h3>
-                                Mesas ocupadas
-                            </h3>
-
+                            <h3>Mesas ocupadas</h3>
                             <div class="numero">
+                                <%
+                                Conexion conexion2 = new Conexion();
+                                Connection con2 = conexion2.conectar();
 
-                                <span class="ocupadas">
-                                    3
-                                </span>
+                                PreparedStatement totalPS = con2.prepareStatement("SELECT COUNT(*) FROM Mesas");
+                                ResultSet totalRS = totalPS.executeQuery();
+                                int totalMesas = 0;
+                                if(totalRS.next()){ totalMesas = totalRS.getShort(1); }
 
-                                <span class="total">
-                                    /12
-                                </span>
+                                PreparedStatement ocupadasPS = con2.prepareStatement("SELECT COUNT(*) FROM Mesas WHERE estado='Ocupada'");
+                                ResultSet ocupadasRS = ocupadasPS.executeQuery();
+                                int ocupadas = 0;
+                                if(ocupadasRS.next()){ ocupadas = ocupadasRS.getInt(1); }
 
+                                double porcentaje = 0;
+                                if(totalMesas > 0){ porcentaje = (ocupadas * 100.0) / totalMesas; }
+
+                                ocupadasRS.close();
+                                ocupadasPS.close();
+                                totalRS.close();
+                                totalPS.close();
+                                con2.close();
+                                %>
+                                <span class="ocupadas"><%=ocupadas%></span>
+                                <span class="total">/<%=totalMesas%></span>
+                                <p><%=String.format("%.0f", porcentaje)%>% ocupado</p>
                             </div>
-
-                            <p>
-                                25% ocupado
-                            </p>
-
                         </div>
-
                     </div>
 
                     <!-- BOTONES -->
                     <div class="acciones">
 
-                        <button>
-                            Consultar platillos
-                        </button>
+                        <a href="Platillos.jsp">
+                            <button type="button">
+                                Consultar platillos
+                            </button>
+                        </a>
 
-                        <button>
-                            Mesa
-                        </button>
+                        <a href="Mesas.jsp">
+                            <button type="button">
+                                Mesa
+                            </button>
+                        </a>
 
                     </div>
 
@@ -180,32 +191,30 @@
 
                     <!-- MESAS -->
                     <div class="mapa-mesas">
+                        <%
+                        Conexion conexion = new Conexion();
+                        Connection con = conexion.conectar();
+                        PreparedStatement ps = con.prepareStatement("SELECT * FROM Mesas ORDER BY id_mesa");
+                        ResultSet rs = ps.executeQuery();
 
-                        <div class="mesa libre-mesa">1</div>
+                        while(rs.next()){
+                            int mesa = rs.getInt("id_mesa");
+                            String estadoMesa = rs.getString("estado");
+                            String clase = "";
 
-                        <div class="mesa ocupada-mesa">2</div>
-
-                        <div class="mesa sucia-mesa">3</div>
-
-                        <div class="mesa libre-mesa">4</div>
-
-                        <div class="mesa libre-mesa">5</div>
-
-                        <div class="mesa reservada-mesa">6</div>
-
-                        <div class="mesa ocupada-mesa">7</div>
-
-                        <div class="mesa libre-mesa">8</div>
-
-                        <div class="mesa libre-mesa">9</div>
-
-                        <div class="mesa sucia-mesa">10</div>
-
-                        <div class="mesa libre-mesa">11</div>
-
-                        <div class="mesa ocupada-rect">12</div>
-
-                    </div>
+                            if(estadoMesa.equals("Libre")) { clase = "libre-mesa"; }
+                            else if(estadoMesa.equals("Ocupada")) { clase = "ocupada-mesa"; }
+                            else if(estadoMesa.equals("Sucia")) { clase = "sucia-mesa"; }
+                            else if(estadoMesa.equals("Reservada")) { clase = "reservada-mesa"; }
+                        %>
+                            <div class="mesa <%=clase%>"><%=mesa%></div>
+                        <%
+                        }
+                        rs.close();
+                        ps.close();
+                        con.close();
+                        %>
+                        </div>
 
                 </div>
 
@@ -218,7 +227,7 @@
 
             <div class="footer-box">
 
-                <h4>Síguenos</h4>
+                <h4>SÃ­guenos</h4>
 
                 <div class="iconos">
 
@@ -238,10 +247,10 @@
 
                 <h4>Contacto</h4>
 
-                <p>✳ 079</p>
+                <p>â³ 079</p>
 
                 <p>
-                    Comunícate, estamos <br>
+                    ComunÃ­cate, estamos <br>
                     para ayudarte
                 </p>
 

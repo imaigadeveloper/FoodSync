@@ -34,7 +34,7 @@
 
      <div class="menu-nav">
             
-            <a href="Inicio.html">Inicio</a>
+            <a href="Inicio.jsp">Inicio</a>
 
             <span>|</span>
             
