@@ -84,7 +84,7 @@
     </nav>
 
     <div class="menu-nav">
-        <a href="Inicio.html">Inicio</a> <span>|</span>
+        <a href="Inicio.jsp">Inicio</a> <span>|</span>
         <a href="Platillos.jsp">Platillos</a> <span>|</span>
         <a href="Mesas.jsp">Mesas</a> <span>|</span>
         <a href="Reservaciones.jsp">Reservaciones</a> <span>|</span>

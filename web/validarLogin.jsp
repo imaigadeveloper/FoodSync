@@ -15,21 +15,21 @@ try{
     con = DriverManager.getConnection(
         "jdbc:mysql://localhost:3306/foodsync",
         "root",
-        "Emipro"
+        "n0m3l0"
     );
 
     st = con.createStatement();
 
     rs = st.executeQuery(
-        "SELECT * FROM usuarios WHERE usuario='"
+        "SELECT * FROM Clientes WHERE Clientes='"
         + usuario +
-        "' AND contrasena='"
+        "' AND password='"
         + password + "'"
     );
 
     if(rs.next()){
 
-        response.sendRedirect("principal.html");
+        response.sendRedirect("index.html");
 
     }else{
 

@@ -41,7 +41,7 @@
         <!-- MENU -->
         <div class="menu-nav">
             <!-- pÃ¡gina actual -->
-            <a href="Inicio.html">Inicio</a>
+            <a href="Inicio.jsp">Inicio</a>
 
             <span>|</span>
 
