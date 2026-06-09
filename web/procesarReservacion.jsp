@@ -51,7 +51,7 @@
 %>
             <script>
                 alert("¡Reservación guardada con éxito!");
-                window.location.href = "Mesas.jsp";
+                window.location.href = "Reservaciones.jsp";
             </script>
 <%
         } else {

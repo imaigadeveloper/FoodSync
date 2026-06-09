@@ -3,6 +3,24 @@
 <%-- IMPORTAMOS CLASE CONEXION --%>
 <%@ page import="modelo.Conexion" %> 
 
+<%
+    // -----------------------------------------------------------------
+    // VALIDACIÓN DE SEGURIDAD (Si escriben Pedidos.jsp directo en la barra)
+    // -----------------------------------------------------------------
+    String usuario = (String) session.getAttribute("usuario");
+    String rol = (String) session.getAttribute("rol");
+
+    if (usuario == null || rol == null || (!rol.equals("Mesero") && !rol.equals("Supervisor"))) {
+%>
+    <script>
+        alert("Debes iniciar sesión con un rol autorizado para poder acceder al panel de pedidos.");
+        window.location.href = "Sesion.jsp";
+    </script>
+<%
+        return; // Detiene por completo la carga de la página
+    }
+%>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -34,7 +52,7 @@
             if (accion.equals("agregar")) {
                 String nombrePlatillo = request.getParameter("nombre_platillo").trim();
                 int cantidad = Integer.parseInt(request.getParameter("cantidad"));
-                String notesChef = request.getParameter("notas_chef"); // Se captura el parámetro del formulario
+                String notesChef = request.getParameter("notas_chef"); 
                 
                 // 1. Buscar si el platillo existe y está disponible
                 PreparedStatement psPlatillo = conn.prepareStatement("SELECT id_platillo, precio FROM Platillos WHERE nombre = ? AND estado = 'Disponible'");
@@ -44,7 +62,7 @@
                 if (rsPlatillo.next()) {
                     int idPlatillo = rsPlatillo.getInt("id_platillo");
                     
-                    // CORRECCIÓN 1: Buscar el pedido activo en cualquiera de los tres estados de cocina
+                    // Buscar el pedido activo en cualquiera de los tres estados de cocina
                     PreparedStatement psPedido = conn.prepareStatement(
                         "SELECT id_pedido FROM Pedidos WHERE id_mesa = ? AND estado_pedido IN ('Pendiente', 'En cocina', 'Listo') LIMIT 1"
                     );
@@ -55,7 +73,7 @@
                     if (rsPedido.next()) {
                         idPedido = rsPedido.getInt("id_pedido");
                     } else {
-                        // Si no tiene pedido activo, se crea uno nuevo (por defecto id_personal temporal 'M001')
+                        // Si no tiene pedido activo, se crea uno nuevo
                         PreparedStatement psCrearPedido = conn.prepareStatement("INSERT INTO Pedidos (id_mesa, id_personal, estado_pedido) VALUES (?, 'M001', 'Pendiente')", Statement.RETURN_GENERATED_KEYS);
                         psCrearPedido.setInt(1, Integer.parseInt(mesaSeleccionada));
                         psCrearPedido.executeUpdate();
@@ -103,7 +121,6 @@
             
             // ACCIÓN: CERRAR CUENTA
             else if (accion.equals("cerrar_pedido")) {
-                // CORRECCIÓN 2: Cambiamos el estado del pedido actual a 'Entregado' buscando en cualquiera de los estados activos
                 String sqlCerrar = "UPDATE Pedidos SET estado_pedido = 'Entregado' WHERE id_mesa = ? AND estado_pedido IN ('Pendiente', 'En cocina', 'Listo')";
                 PreparedStatement psCerrar = conn.prepareStatement(sqlCerrar);
                 psCerrar.setInt(1, Integer.parseInt(mesaSeleccionada));
@@ -126,23 +143,8 @@
 
 <div class="contenedor-sitio">
 
-    <nav class="navbar-top">
-        <div class="logo-box">
-            <img src="imagen/Logo.png" alt="FoodSync" class="nav-logo">
-        </div>
-    </nav>
-
-    <div class="menu-nav">
-        <a href="Inicio.jsp">Inicio</a> <span>|</span>
-        <a href="Platillos.jsp">Platillos</a> <span>|</span>
-        <a href="Mesas.jsp">Mesas</a> <span>|</span>
-        <a href="Reservaciones.jsp">Reservaciones</a> <span>|</span>
-        <a href="Pedidos.jsp" class="activo">Pedidos</a> <span>|</span>
-        <a href="Personal.jsp">Personal</a> <span>|</span>
-        <a href="Clientes.html">Clientes</a> <span>|</span>
-        <a href="Ventas.jsp">Ventas</a> <span>|</span>
-        <a href="Cocina.jsp">Cocina</a>
-    </div>
+    <%-- AQUÍ SE INCLUYE EL NAVBAR DINÁMICO --%>
+    <%@include file="navbar.jsp" %>
 
     <main class="contenido">
         <section class="panel-principal">
@@ -163,7 +165,6 @@
                         int idMesaM = rsMesas.getInt("id_mesa");
                         
                         String estadoP = "Pendiente"; 
-                        // CORRECCIÓN 3: Traer el estado real del pedido activo para mostrarlo en la barra lateral del mesero
                         PreparedStatement psEstPed = conn.prepareStatement(
                             "SELECT estado_pedido FROM Pedidos WHERE id_mesa = ? AND estado_pedido IN ('Pendiente', 'En cocina', 'Listo') LIMIT 1"
                         );
@@ -196,7 +197,6 @@
                     <h3>Mesa <%= mesaSeleccionada %></h3>
                     
                     <%
-                        // Consulta para traer los platillos de la mesa que correspondan al pedido activo
                         String sqlDetalle = "SELECT dp.id_detalle, p.nombre, p.precio, dp.cantidad, dp.notas_chef FROM Detalle_Pedidos dp " +
                                             "JOIN Platillos p ON dp.id_platillo = p.id_platillo " +
                                             "JOIN Pedidos pe ON dp.id_pedido = pe.id_pedido " +

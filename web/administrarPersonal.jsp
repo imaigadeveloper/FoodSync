@@ -1,85 +1,32 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Administrar Personal</title>
+    <title>Administrar Personal - FoodSync</title>
 
     <link rel="stylesheet" href="AdministrarPersonal.css">
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&family=Pacifico&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <script>
-
         function mostrarPassword(){
-
-            let input =
-                document.getElementById("password");
-
-            if(input.type==="password"){
-
-                input.type="text";
-
-            }else{
-
-                input.type="password";
+            let input = document.getElementById("password");
+            if(input.type === "password"){
+                input.type = "text";
+            } else {
+                input.type = "password";
             }
         }
-
     </script>
-
 </head>
-
 <body>
 
 <div class="contenedor-sitio">
 
-    <!-- NAVBAR -->
-
-    <nav class="navbar-top">
-
-        <div class="logo-box">
-            <img src="imagen/Logo.png"
-                 alt="FoodSync"
-                 class="nav-logo">
-        </div>
-
-    </nav>
-
-    <!-- MENU -->
-
-    <div class="menu-nav">
-
-        <a href="Inicio.jsp">Inicio</a>
-        <span>|</span>
-
-        <a href="Platillos.jsp">Platillos</a>
-        <span>|</span>
-
-        <a href="Mesas.jsp">Mesas</a>
-        <span>|</span>
-
-        <a href="Reservaciones.jsp">Reservaciones</a>
-        <span>|</span>
-
-        <a href="Pedidos.jsp">Pedidos</a>
-        <span>|</span>
-
-        <a href="Personal.jsp" class="activo">Personal</a>
-        <span>|</span>
-
-        <a href="Clientes.html">Clientes</a>
-        <span>|</span>
-
-        <a href="Ventas.jsp">Ventas</a>
-        <span>|</span>
-
-        <a href="Cocina.html">Cocina</a>
-
-    </div>
-
-    <!-- CONTENIDO -->
+    <%-- INCLUSIÓN DEL NAVBAR DINÁMICO UNIFICADO --%>
+    <%-- Se encarga de procesar el menú de navegación y validar el estado de la sesión activa --%>
+    <%@include file="navbar.jsp" %>
 
     <main class="contenido">
 
@@ -108,12 +55,12 @@
 
                             <div class="campo">
                                 <label>Puesto</label>
-                                    <select name="puesPer">
-                                        <option value="">Selecciona un Puesto</option>
-                                        <option value="1">Supervisores</option>
-                                        <option value="2">Mesero</option>
-                                        <option value="3">Cocinero</option>
-                                    </select>
+                                <select name="puesPer">
+                                    <option value="">Selecciona un Puesto</option>
+                                    <option value="1">Supervisores</option>
+                                    <option value="2">Mesero</option>
+                                    <option value="3">Cocinero</option>
+                                </select>
                             </div>
                             
                             <div class="campo">
@@ -156,17 +103,17 @@
 
                         <div class="crud-botones">
                             <button type="submit"
-                                   value="Eliminar"
-                                   formaction="eliminar.jsp"
-                                   class="crud-btn">Eliminar</button>
+                                    value="Eliminar"
+                                    formaction="eliminar.jsp"
+                                    class="crud-btn">Eliminar</button>
                             <button type="submit"
-                                   value="Actualizar"
-                                   formaction="actualizar.jsp"
-                                   class="crud-btn">Actualizar</button>
+                                    value="Actualizar"
+                                    formaction="actualizar.jsp"
+                                    class="crud-btn">Actualizar</button>
                             <button type="submit"
-                                   value="Añadir"
-                                   formaction="añadir.jsp"
-                                   class="crud-btn">Añadir</button>
+                                    value="Añadir"
+                                    formaction="añadir.jsp"
+                                    class="crud-btn">Añadir</button>
                         </div>
                     </form>
 
@@ -178,53 +125,37 @@
 
     </main>
 
-    <!-- FOOTER -->
-
     <footer class="pie-morado">
 
         <div class="footer-box">
-
             <h4>Horario</h4>
-
             <p>Lunes - Domingo</p>
-
             <p>8:00 AM - 11:00 PM</p>
-
         </div>
 
         <div class="footer-box">
-
             <h4>Ubicación</h4>
-
             <p>Av. FoodSync #128</p>
-
             <p>Ciudad de México</p>
-
         </div>
 
         <div class="footer-box">
-
-            <h4>Síguenos</h4>
-
+            <h4>Siguenos</h4>
             <div class="iconos">
-
                 <i class="fa-brands fa-facebook-f"></i>
                 <i class="fa-brands fa-instagram"></i>
                 <i class="fa-brands fa-x-twitter"></i>
                 <i class="fa-brands fa-youtube"></i>
-
             </div>
-
         </div>
 
     </footer>
 
     <div class="copy">
-        © 2026 FoodSync — Todos los derechos reservados
+        © 2026 FoodSync - Todos los derechos reservados
     </div>
 
 </div>
-
 
 </body>
 </html>

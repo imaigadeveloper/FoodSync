@@ -5,9 +5,9 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Mesas - FoodSync</title>
+        <title>Reservaciones - FoodSync</title>
         <link rel="stylesheet" href="Mesass.css">
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&family=Pacifico&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;500;700&family=Pacifico&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">  
         <style>
             .mesa.seleccionada {
@@ -20,23 +20,9 @@
     <body>
         <div class="contenedor-sitio">
 
-            <nav class="navbar-top">
-                <div class="logo-box">
-                    <img src="imagen/Logo.png" alt="FoodSync" class="nav-logo">
-                </div>
-            </nav>
-
-            <div class="menu-nav">
-                <a href="Inicio.jsp">Inicio</a> <span>|</span>
-                <a href="Platillos.jsp">Platillos</a> <span>|</span>
-                <a href="Mesas.jsp">Mesas</a> <span>|</span>
-                <a href="Reservaciones.jsp">Reservaciones</a> <span>|</span>
-                <a href="Pedidos.jsp">Pedidos</a> <span>|</span>
-                <a href="Personal.jsp">Personal</a> <span>|</span>
-                <a href="Clientes.html">Clientes</a> <span>|</span>
-                <a href="Ventas.jsp">Ventas</a> <span>|</span>
-                <a href="Cocina.jsp">Cocina</a>
-            </div>
+            <%-- INCLUSIÓN DEL NAVBAR DINÁMICO UNIFICADO --%>
+            <%-- Nota: navbar.jsp ya declara e inicializa la variable "usuarioLogueado" --%>
+            <%@include file="navbar.jsp" %>
 
             <main class="contenido">
                 <section class="panel-principal">
@@ -116,8 +102,19 @@
                                 <label>Hora de Reserva</label>
                                 <input type="time" name="hora_reserva" required>
 
-                                <label>Usuario del Cliente (Registrado)</label>
-                                <input type="text" name="usuario_cliente" required placeholder="Ej: juan99">
+                                <%-- 
+                                    Como navbar.jsp ya se cargó arriba, la variable 'usuarioLogueado' 
+                                    ya existe y la podemos usar directamente aquí sin volver a declararla.
+                                --%>
+                                <% if (usuarioLogueado != null && !usuarioLogueado.isEmpty()) { %>
+                                    <input type="hidden" name="usuario_cliente" value="<%= usuarioLogueado %>">
+                                    <p style="margin-top: 15px; color: #555; font-size: 0.95rem;">
+                                        Reservando como cuenta activa: <strong style="color: #6f42c1;"><%= usuarioLogueado %></strong>
+                                    </p>
+                                <% } else { %>
+                                    <label>Usuario del Cliente (Registrado)</label>
+                                    <input type="text" name="usuario_cliente" required placeholder="Ej: juan99">
+                                <% } %>
 
                                 <input type="submit" value="Confirmar Reservación" class="confirmar">
                             </div>
@@ -154,17 +151,14 @@
             </div>
         </div>
 
-        <script>
-    // Se ejecuta en cuanto la página termina de cargar
+<script>
     window.addEventListener('DOMContentLoaded', (event) => {
         var fechaInput = document.getElementById('fecha_reserva');
         var hoy = new Date();
         
-        // Ajustamos los minutos de la zona horaria local para evitar desfases de días
         var offset = hoy.getTimezoneOffset() * 60000;
         var fechaLocal = new Date(hoy.getTime() - offset).toISOString().split('T')[0];
         
-        // Asignamos el valor, el mínimo y el máximo con la fecha de hoy
         if (fechaInput) {
             fechaInput.value = fechaLocal;
             fechaInput.min = fechaLocal;
@@ -172,7 +166,6 @@
         }
     });
 
-    // Lógica para seleccionar la mesa visualmente
     function seleccionarMesa(elemento) {
         document.querySelectorAll('.mesa').forEach(m => m.classList.remove('seleccionada'));
         elemento.classList.add('seleccionada');
@@ -182,7 +175,6 @@
         document.getElementById('mesa_visible').value = "Mesa N° " + idMesa;
     }
 
-    // Validación antes de enviar el formulario
     document.getElementById('formReservacion').onsubmit = function(e) {
         var mesa = document.getElementById('id_mesa').value;
         if(!mesa) {

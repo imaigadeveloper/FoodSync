@@ -1,55 +1,30 @@
 <%@page import="java.sql.*"%>
 <%@page import="modelo.Conexion"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
+    // VALIDACIÓN DE SEGURIDAD
+    String rol = (String) session.getAttribute("rol");
+    if (rol == null || (!rol.equals("Mesero") && !rol.equals("Supervisor"))) {
+        response.sendRedirect("Sesion.jsp");
+        return;
+    }
+%>
+<!DOCTYPE html>
 <html>
     <head>
-    <meta charset="UTF-8">
-    <title>Mesas</title>
-    <link rel="stylesheet" href="Mesass.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&family=Pacifico&display=swap" rel="stylesheet">
-    <!-- ICONOS -->
-    <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <meta charset="UTF-8">
+        <title>Mesas</title>
+        <link rel="stylesheet" href="Mesass.css">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&family=Pacifico&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     </head>
     <body>
         <div class="contenedor-sitio">
 
-        <!-- NAVBAR SUPERIOR -->
-        <nav class="navbar-top">
-            <div class="logo-box">
-                <img src="imagen/Logo.png"
-                     alt="FoodSync"
-                     class="nav-logo">
-            </div>
-        </nav>
+        <%@include file="navbar.jsp" %>
 
-        <!-- MENU -->
-        <div class="menu-nav">
-            <!-- página actual -->
-            <a href="Inicio.jsp">Inicio</a>
-            <span>|</span>
-            <a href="Platillos.jsp">Platillos</a>
-            <span>|</span>
-            <a href="Mesas.jsp">Mesas</a>
-            <span>|</span>
-            <a href="Reservaciones.jsp">Reservaciones</a>
-            <span>|</span>
-            <a href="Pedidos.jsp">Pedidos</a>
-            <span>|</span>
-            <a href="Personal.jsp">Personal</a>
-            <span>|</span>
-            <a href="Clientes.html">Clientes</a>
-            <span>|</span>
-            <a href="Ventas.jsp">Ventas</a>
-            <span>|</span>
-            <a href="Cocina.jsp">Cocina</a>
-        </div>
-
-        <!-- CONTENIDO -->
-<main class="contenido">
-
+        <main class="contenido">
             <section class="panel-principal">
-
                 <div class="columna-izquierda">
                     <div class="Mesas">
                         <h1>Mesas</h1>
@@ -59,14 +34,12 @@
                         <div class="icono-mesa">
                             <i class="fa-solid fa-chair"></i>
                         </div>
-
                         <div class="info-mesas">
                             <h3>Mesas ocupadas</h3>
                             <div class="numero">
                                 <%
                                 Conexion conexion2 = new Conexion();
                                 Connection con2 = conexion2.conectar();
-
                                 PreparedStatement totalPS = con2.prepareStatement("SELECT COUNT(*) FROM Mesas");
                                 ResultSet totalRS = totalPS.executeQuery();
                                 int totalMesas = 0;
@@ -96,7 +69,6 @@
 
                 <div class="columna-derecha">
                     <div class="mapa-container">
-
                         <div class="mapa-header">
                             <h2>MAPA DE MESAS</h2>
                             <div class="acciones">
@@ -138,40 +110,24 @@
                         con.close();
                         %>
                         </div>
-
                     </div>
                 </div>
-
             </section>
         </main>
 
-        <!-- FOOTER -->
         <footer class="pie-morado">
-
             <div class="footer-box">
-
                 <h4>Horario</h4>
-
                 <p>Lunes - Domingo</p>
-
                 <p>8:00 AM - 11:00 PM</p>
-
             </div>
-
             <div class="footer-box">
-
                 <h4>Ubicación</h4>
-
                 <p>Av. FoodSync #128</p>
-
                 <p>Ciudad de México</p>
-
             </div>
-
             <div class="footer-box">
-
                 <h4>Síguenos</h4>
-
                 <div class="iconos">
                     <i class="fa-brands fa-facebook-f"></i>
                     <i class="fa-brands fa-instagram"></i>
@@ -181,11 +137,9 @@
             </div>
         </footer>
 
-        <!-- COPYRIGHT -->
         <div class="copy">
             © 2026 FoodSync — Todos los derechos reservados
         </div>
-
     </div>
     </body>
 </html>
